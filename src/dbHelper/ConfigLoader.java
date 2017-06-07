@@ -174,7 +174,7 @@ public class ConfigLoader {
 	}
 	/**
 	 * Durchsucht eine ArrayList auf Verbinungskeywords und überträgt diese in die Objekt ArrayList sArrLConfigItems<br>
-	 * Reihenfolge: URL, ACCount, PSW
+	 * Reihenfolge: URL, ACCount, PSW und Datenbankname
 	 * @param ArrLBuffer
 	 */
 	private static void prepArrL(ArrayList<String> ArrLBuffer) {
@@ -183,6 +183,8 @@ public class ConfigLoader {
 		ArrLVal.add(sFindValue(ArrLBuffer, "URL:"));
 		ArrLVal.add(sFindValue(ArrLBuffer, "ACC:"));
 		ArrLVal.add(sFindValue(ArrLBuffer, "PSW:"));
+		ArrLVal.add(sFindValue(ArrLBuffer, "DBN:"));
+		if(ArrLVal.get(3)=="") ArrLVal.remove(3);
 		sArrLConfigItems = ArrLVal;
 	}
 	

@@ -10,7 +10,9 @@ import java.util.*;
 /**
  * Diese Klasse stellt eine Verbindung zur Datenbank her und <br>
  * ermöglicht die Verwaltung von Datensätzen.<br>
- * <b> Hinweis: Eine Datentypprüfung für Update und Insert sind NICHT vorhanden! <b><br>
+ * <b> Hinweis: Eine Datentypprüfung für Update und Insert sind NICHT vorhanden!
+ * <b><br>
+ * 
  * @author Cohn, Matthias (77210-565998)
  * @version 1.0.1, 2017-05-24
  */
@@ -28,24 +30,53 @@ public class DBCon {
 
 	/**
 	 * Verbindungsparameter zur DB festlegen
-	 * @param sURL, String: URL zum DB-Server/DB (beginnend bei IP/Hostname
-	 * @param sUser, String: Name des DB-Nutzers
-	 * @param sPsw, String: Passwort (Klartext) des DB-Nutzers
+	 * 
+	 * @param sURL,
+	 *            String: URL zum DB-Server/DB (beginnend bei IP/Hostname
+	 * @param sUser,
+	 *            String: Name des DB-Nutzers
+	 * @param sPsw,
+	 *            String: Passwort (Klartext) des DB-Nutzers
 	 */
 	public void setConnection(String sURL, String sUser, String sPsw) {
+		setConnection(sURL, sUser, sPsw, null);
+	}
+
+	/**
+	 * * Verbindungsparameter zur DB festlegen (externer DB's)
+	 * 
+	 * @param sURL,
+	 *            String: URL zum DB-Server/DB (beginnend bei IP/Hostname
+	 * @param sUser,
+	 *            String: Name des DB-Nutzers
+	 * @param sPsw,
+	 *            String: Passwort (Klartext) des DB-Nutzers
+	 * @param sDB,
+	 *            String: Name der Datenbank
+	 */
+	public void setConnection(String sURL, String sUser, String sPsw, String sDB) {
 		mds.setURL("jdbc:mysql://" + sURL);
 		mds.setUser(sUser);
 		mds.setPassword(sPsw);
+		if (sDB != null)
+			mds.setDatabaseName(sDB);
 	}
 
 	/**
 	 * Verbindung herstellen. <br>
-	 * Vorher müssen mit {@code setConnection} die Parameter festgelegt werden. 
-	 * @throws SQLException : Wenn verbindung nicht erfolgreich
+	 * Vorher müssen mit {@code setConnection} die Parameter festgelegt werden.
+	 * 
+	 * @throws SQLException
+	 *             : Wenn verbindung nicht erfolgreich
 	 */
 	public void connect() throws SQLException {
 		try {
 			con = mds.getConnection();
+			if (mds.getDatabaseName() != null && mds.getDatabaseName() != "") {
+				String schema = mds.getDatabaseName();
+				con.setSchema(schema);
+			}
+			System.out.println(con.getSchema());
 			// return true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -55,7 +86,9 @@ public class DBCon {
 
 	/**
 	 * Verbindung zur DB trennen
-	 * @throws SQLException : Wenn aufheben der DB-Verbindung nicht möglich
+	 * 
+	 * @throws SQLException
+	 *             : Wenn aufheben der DB-Verbindung nicht möglich
 	 */
 	public void disconnect() throws SQLException {
 		try {
@@ -66,15 +99,16 @@ public class DBCon {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Prüft den Verbinungsstatus zur DB
+	 * 
 	 * @return Boolean: Status der DB-Verbindung
 	 */
-	public boolean isConnected(){
-		boolean connected=false;
+	public boolean isConnected() {
+		boolean connected = false;
 		try {
-			connected= !con.isClosed();
+			connected = !con.isClosed();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -96,19 +130,21 @@ public class DBCon {
 			throw new Exception("Fehler bei der Umwandlung (List ->Array)");
 		}
 	}
-	
+
 	/**
 	 * Gibt die Namen aller, in der DB vorhandenen, Tabellen zurück
+	 * 
 	 * @return ArrayList <String> : Namen aller, in der DB vorhandenen, Tabellen
 	 * @throws Exception
 	 */
-	public ArrayList<String> getTablesList() throws Exception{
+	public ArrayList<String> getTablesList() throws Exception {
 		ArrayList<String> sTableInf = new ArrayList<String>();
 		String sQuery = "SHOW TABLES";
 		Statement stm = con.createStatement();
 		try {
 			ResultSet rs = stm.executeQuery(sQuery);
 			if (rs != null) {
+				rs.beforeFirst();
 				while (rs.next()) {
 					sTableInf.add(rs.getString(1));
 				}
@@ -116,17 +152,18 @@ public class DBCon {
 			} else {
 				throw new Exception("Keine Tabellen in Datenbank vorhanden.");
 			}
-
 		} catch (SQLException ex) {
 			throw new Exception("Fehler bei der SQL-Abfrage. \n" + sQuery);
 		}
-		
+
 	}
 
 	/**
 	 * Gibt die Namen aller, in der Tabelle vorhandenen, Tabellenspalten zurück
+	 * 
 	 * @return String[] Namen aller, in der Tabelle vorhandenen, Tabellenspalten
-	 * @param sTableName, String: Tabellenname
+	 * @param sTableName,
+	 *            String: Tabellenname
 	 * @throws Exception
 	 */
 	public String[] getColumns(String sTableName) throws Exception {
@@ -137,15 +174,17 @@ public class DBCon {
 			throw new Exception("Fehler bei der Umwandlung (List ->Array)");
 		}
 	}
-	
+
 	/**
 	 * Gibt die Namen aller, in der Tabelle vorhandenen, Tabellenspalten zurück
 	 * 
-	 * @return ArrayList<String> Namen aller, in der Tabelle vorhandenen, Tabellenspalten
-	 * @param sTableName, String: Tabellenname
+	 * @return ArrayList<String> Namen aller, in der Tabelle vorhandenen,
+	 *         Tabellenspalten
+	 * @param sTableName,
+	 *            String: Tabellenname
 	 * @throws Exception
 	 */
-	public  ArrayList<String> getColumnsList(String sTableName) throws Exception{
+	public ArrayList<String> getColumnsList(String sTableName) throws Exception {
 		ArrayList<String> sTableInf = new ArrayList<String>();
 		Statement stm = con.createStatement();
 		String sQuery = "SHOW COLUMNS FROM " + sTableName;
@@ -154,7 +193,7 @@ public class DBCon {
 			if (rs != null) {
 				while (rs.next()) {
 					sTableInf.add(rs.getString(1));
-				}				
+				}
 				return sTableInf;
 			} else {
 				throw new Exception("Keine Tabellenspalten vorhanden.");
@@ -166,8 +205,11 @@ public class DBCon {
 
 	/**
 	 * Gibt den Inhalt aller, in der Tabellenspalte vorhandenen, Zellen zurück
-	 * @param sTable , String : Tabellenname
-	 * @param sColName , String : Spaltenname
+	 * 
+	 * @param sTable
+	 *            , String : Tabellenname
+	 * @param sColName
+	 *            , String : Spaltenname
 	 * @return String[] Inhalt aller, in der Tabellenspalte vorhandenen, Zellen
 	 */
 	public String[] getContentOfColumn(String sTable, String sColName) throws Exception {
@@ -179,12 +221,16 @@ public class DBCon {
 			throw new Exception("Fehler bei der Umwandlung (List ->Array)");
 		}
 	}
-	
+
 	/**
 	 * Gibt den Inhalt aller, in der Tabellenspalte vorhandenen, Zellen zurück
-	 * @param sTable , String : Tabellenname
-	 * @param sColName , String : Spaltenname
-	 * @return ArrayList<String> Inhalt aller, in der Tabellenspalte vorhandenen, Zellen
+	 * 
+	 * @param sTable
+	 *            , String : Tabellenname
+	 * @param sColName
+	 *            , String : Spaltenname
+	 * @return ArrayList<String> Inhalt aller, in der Tabellenspalte
+	 *         vorhandenen, Zellen
 	 * @throws Exception
 	 */
 	public ArrayList<String> getContentOfColumnList(String sTable, String sColName) throws Exception {
@@ -276,9 +322,12 @@ public class DBCon {
 	}
 
 	/**
-	 *  Gibt Ergebnisse einfacher Abfragen zurück
-	 * @param sQuery , String: SQL-Konforme "Select ..." - Abfrage
-	 * @param bHeadline, Spaltenname wird mit übergeben
+	 * Gibt Ergebnisse einfacher Abfragen zurück
+	 * 
+	 * @param sQuery
+	 *            , String: SQL-Konforme "Select ..." - Abfrage
+	 * @param bHeadline,
+	 *            Spaltenname wird mit übergeben
 	 * @return String[][] Inhalt des Ergebnisses der Abfrage
 	 * @throws Exception
 	 */
@@ -334,6 +383,7 @@ public class DBCon {
 
 	/**
 	 * Anfügen eines neuen Datensatzes in einer Tabelle
+	 * 
 	 * @param Table,
 	 *            String - Name der Tabelle
 	 * @param ColNames
@@ -352,8 +402,10 @@ public class DBCon {
 
 	/**
 	 * Anfügen eines neuen Datensatzes in einer Tabelle
-	 * @param sQuery , String: SQL-Konforme "Insert Into ..." - Abfrage
-	 * @return Integer:  Anzahl der ausgeführten Reihen (Erfolgreiches Einfügen:=
+	 * 
+	 * @param sQuery
+	 *            , String: SQL-Konforme "Insert Into ..." - Abfrage
+	 * @return Integer: Anzahl der ausgeführten Reihen (Erfolgreiches Einfügen:=
 	 *         >0
 	 * @throws Exception
 	 */
@@ -371,9 +423,13 @@ public class DBCon {
 
 	/**
 	 * Löschen eines oder mehrerer Datensätze
-	 * @param sTable, String: Tabellenname
-	 * @param sCriteria, String[][]: String{{[Name der Spalte],[Kriterium]}, ...} WHERE-CLAUSE
-	 * @return Integer:  Anzahl der ausgeführten Reihen (Erfolgreiches Einfügen:=
+	 * 
+	 * @param sTable,
+	 *            String: Tabellenname
+	 * @param sCriteria,
+	 *            String[][]: String{{[Name der Spalte],[Kriterium]}, ...}
+	 *            WHERE-CLAUSE
+	 * @return Integer: Anzahl der ausgeführten Reihen (Erfolgreiches Einfügen:=
 	 *         >0
 	 * @throws Exception
 	 */
@@ -384,8 +440,10 @@ public class DBCon {
 
 	/**
 	 * Löschen eines oder mehrerer Datensätze
-	 * @param sQuery, String: SQL-Konforme "DELETE ..." - Abfrage
-	 * @return Integer:  Anzahl der ausgeführten Reihen (Erfolgreiches Einfügen:=
+	 * 
+	 * @param sQuery,
+	 *            String: SQL-Konforme "DELETE ..." - Abfrage
+	 * @return Integer: Anzahl der ausgeführten Reihen (Erfolgreiches Einfügen:=
 	 *         >0
 	 * @throws Exception
 	 */
@@ -414,10 +472,16 @@ public class DBCon {
 
 	/**
 	 * Aktualisieren eines oder mehrerer Datensätze
-	 * @param Table, String: Tabellenname
-	 * @param sColContent , String[][]: String{{[Name der Spalte],[neuer Wert]}, ...} SET-Clause
-	 * @param sCriteria, String[][]: String{{[Name der Spalte],[Kriterium]}, ...} WHERE-CLAUSE
-	 * @return Integer:  Anzahl der ausgeführten Reihen (Erfolgreiches Einfügen:=
+	 * 
+	 * @param Table,
+	 *            String: Tabellenname
+	 * @param sColContent
+	 *            , String[][]: String{{[Name der Spalte],[neuer Wert]}, ...}
+	 *            SET-Clause
+	 * @param sCriteria,
+	 *            String[][]: String{{[Name der Spalte],[Kriterium]}, ...}
+	 *            WHERE-CLAUSE
+	 * @return Integer: Anzahl der ausgeführten Reihen (Erfolgreiches Einfügen:=
 	 *         >0
 	 * @throws Exception
 	 */
@@ -429,8 +493,10 @@ public class DBCon {
 
 	/**
 	 * Aktualisieren eines oder mehrerer Datensätze
-	 * @param sQuery, String: SQL-Konforme "UPDATE ..." - Abfrage
-	 * @return Integer:  Anzahl der ausgeführten Reihen (Erfolgreiches Einfügen:=
+	 * 
+	 * @param sQuery,
+	 *            String: SQL-Konforme "UPDATE ..." - Abfrage
+	 * @return Integer: Anzahl der ausgeführten Reihen (Erfolgreiches Einfügen:=
 	 *         >0
 	 * @throws Exception
 	 */
@@ -447,6 +513,7 @@ public class DBCon {
 
 	/**
 	 * SQL-Konforme Aufbereitung der Arrays zu String
+	 * 
 	 * @param sArr
 	 *            String[] Spaltennamen
 	 * @param bContent,
@@ -472,8 +539,10 @@ public class DBCon {
 
 	/**
 	 * SQL-Konforme Aufbereitung der Arrays zu String
+	 * 
 	 * @param sCriteria
-	 *            String[][]: String{{[Name der Spalte],[Kriterium]}, ...} WHERE-CLAUSE
+	 *            String[][]: String{{[Name der Spalte],[Kriterium]}, ...}
+	 *            WHERE-CLAUSE
 	 * @param bSelection
 	 *            Relation zw. Kriterien (true= AND; false= OR)
 	 * @param bWhere
@@ -515,37 +584,28 @@ public class DBCon {
 
 	// Zum testen ob wert in Spalte eingefügt werden kann
 	// Nicht fertig!!!!
-/*	
-	public void test(String sTable) {
-		String sQuery = "SELECT * FROM " + sTable;
-
-		try {
-			Statement stm = con.createStatement();
-			ResultSet rs = stm.executeQuery(sQuery);
-
-			int iColCount = rs.getMetaData().getColumnCount();
-			for (int i = 1; i <= iColCount; i++) {
-				isConvertableValue(rs, i);
-			}
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
-	private boolean isConvertableValue(ResultSet rs, int iCol) {
-		try {
-			System.out.print(rs.getMetaData().getColumnLabel(iCol) + ": ");
-			System.out.print(rs.getMetaData().getColumnTypeName(iCol) + ": ");
-			System.out.println(rs.getMetaData().getColumnType(iCol));
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return true;
-	}
-*/
+	/*
+	 * public void test(String sTable) { String sQuery = "SELECT * FROM " +
+	 * sTable;
+	 * 
+	 * try { Statement stm = con.createStatement(); ResultSet rs =
+	 * stm.executeQuery(sQuery);
+	 * 
+	 * int iColCount = rs.getMetaData().getColumnCount(); for (int i = 1; i <=
+	 * iColCount; i++) { isConvertableValue(rs, i); }
+	 * 
+	 * } catch (SQLException e) { // TODO Auto-generated catch block
+	 * e.printStackTrace(); }
+	 * 
+	 * }
+	 * 
+	 * private boolean isConvertableValue(ResultSet rs, int iCol) { try {
+	 * System.out.print(rs.getMetaData().getColumnLabel(iCol) + ": ");
+	 * System.out.print(rs.getMetaData().getColumnTypeName(iCol) + ": ");
+	 * System.out.println(rs.getMetaData().getColumnType(iCol)); } catch
+	 * (SQLException e) { // TODO Auto-generated catch block
+	 * e.printStackTrace(); }
+	 * 
+	 * return true; }
+	 */
 }

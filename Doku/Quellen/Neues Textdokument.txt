@@ -1,0 +1,5 @@
+https://docs.oracle.com/javase/tutorial/essential/environment/env.html
+http://stackoverflow.com/questions/25552/get-os-level-system-information
+https://www.tutorials.de/threads/mysql-tabellennamen-ausgeben-lassen.283513/
+http://stackoverflow.com/questions/5374311/convert-arrayliststring-to-string-array
+https://www.dpunkt.de/java/Programmieren_mit_Java/Java_Database_Connectivity/32.html
