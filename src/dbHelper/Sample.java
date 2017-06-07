@@ -1,6 +1,5 @@
-﻿package dbHelper;
+package dbHelper;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Sample {
@@ -13,9 +12,9 @@ public class Sample {
 		// TODO Auto-generated constructor stub
 	}
 
-	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		try {
+			dbConf.clearConfig(false);
 			ArrLDBConf=dbConf.getsArrLConfigItems();
 			if (ArrLDBConf.size()==3){
 			dbHD.setConnection(ArrLDBConf.get(0),ArrLDBConf.get(1), ArrLDBConf.get(2));
@@ -30,6 +29,26 @@ public class Sample {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		ArrLDBConf.clear();
+		dbConf.clearConfig(false);
+		try {
+
+			ArrLDBConf=dbConf.getsArrLConfigItems();
+			if (ArrLDBConf.size()==3){
+			dbStatus.setConnection(ArrLDBConf.get(0),ArrLDBConf.get(1), ArrLDBConf.get(2));
+			}
+			if(ArrLDBConf.size()==4){
+				dbStatus.setConnection(ArrLDBConf.get(0),ArrLDBConf.get(1), 
+						ArrLDBConf.get(2),ArrLDBConf.get(3));
+			}
+			dbStatus.connect();
+			System.out.println("Verbunden mit Status");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		/*
 		try {
 			dbConf.setsFilePath("");
@@ -42,10 +61,23 @@ public class Sample {
 			e.printStackTrace();
 		}
 		*/
-		String content[]=null;
+		String content[] = null;
 		try {
-			content=dbHD.getTables();
-			for (int i=0; i<=content.length-1; i++){
+			
+			if (dbHD.isConnected()==false)
+				dbHD.connect();
+			content = dbHD.getTables();
+			for (int i = 0; i <= content.length - 1; i++) {
+				System.out.println(content[i]);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		content=null;
+		try {
+			content = dbStatus.getTables();
+			for (int i = 0; i <= content.length - 1; i++) {
 				System.out.println(content[i]);
 			}
 		} catch (Exception e) {

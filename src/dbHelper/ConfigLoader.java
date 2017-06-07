@@ -16,7 +16,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * @author Cohn, Matthias (77210-565998)
- * @version 1.0 - 2017-05-29
+ * @version 1.1.0 - 2017-06-07
  * Ermöglicht das öffnen einer strukturierten Datei, welche <br>
  * Informationen für eine DB-Verbindung enthält, sowie die sicherer <br>
  * Rückgabe der Informationen URL, Account und Passwort (in exakt dieser Reihenfolge)<br>
@@ -102,6 +102,18 @@ public class ConfigLoader {
 			throw new Exception("Kann Datei, bei angegebenem Pfad, nicht selektieren.");
 		}
 	}
+	
+
+	/**
+	 * Setzt die Einstellungen und Dateipfad auf Null zurück
+	 * @param bItemsOnly, Wahr: nur KonfigurationsItems werden gelöscht, False: Dateipfad wird auch gelöscht
+	 */
+	public void clearConfig(boolean bItemsOnly){
+		sArrLConfigItems.clear();
+		if (bItemsOnly==false) sFilePath="";
+	}
+	
+	
 
 	/**
 	 * Übergibt die für die Datenbankverbindung relevanten informationen zurück

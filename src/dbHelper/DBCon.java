@@ -14,19 +14,20 @@ import java.util.*;
  * <b><br>
  * 
  * @author Cohn, Matthias (77210-565998)
- * @version 1.0.1, 2017-05-24
+ * @version 1.1.0, 2017-06-07
  */
 public class DBCon {
-	private static Connection con;
-	private static MysqlDataSource mds = new MysqlDataSource();
+	private Connection con;
+	private MysqlDataSource mds;
 
 	public DBCon() {
 
+		mds=new MysqlDataSource();
 	}
 
-	public static Connection getCon() {
-		return con;
-	}
+//	public static Connection getCon() {
+		//return con;
+//	}
 
 	/**
 	 * Verbindungsparameter zur DB festlegen
@@ -76,7 +77,7 @@ public class DBCon {
 				String schema = mds.getDatabaseName();
 				con.setSchema(schema);
 			}
-			System.out.println(con.getSchema());
+			//System.out.println(con.getSchema());
 			// return true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
