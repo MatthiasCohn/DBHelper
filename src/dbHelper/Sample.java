@@ -84,6 +84,18 @@ public class Sample {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		content=null;
+		try {
+			content=dbHD.getSingleDataSet("SELECT * FROM Ticket");
+			System.out.println("");
+			for (int i = 0; i <= content.length - 1; i++) {
+				System.out.print(content[i]);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		/*
 		try {
 			content=dbStatus.getTables();

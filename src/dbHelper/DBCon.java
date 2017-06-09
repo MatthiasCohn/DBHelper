@@ -22,12 +22,12 @@ public class DBCon {
 
 	public DBCon() {
 
-		mds=new MysqlDataSource();
+		mds = new MysqlDataSource();
 	}
 
-//	public static Connection getCon() {
-		//return con;
-//	}
+	// public static Connection getCon() {
+	// return con;
+	// }
 
 	/**
 	 * Verbindungsparameter zur DB festlegen
@@ -77,7 +77,7 @@ public class DBCon {
 				String schema = mds.getDatabaseName();
 				con.setSchema(schema);
 			}
-			//System.out.println(con.getSchema());
+			// System.out.println(con.getSchema());
 			// return true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -375,6 +375,65 @@ public class DBCon {
 					}
 				}
 				n++;
+			}
+		} else {
+			sArrContent = null;
+		}
+		return sArrContent;
+	}
+
+	/**
+	 * Gibt einen einzelnen Datensatz zurück;
+	 * Treffen mehrerer Datensätze auf die Abfrage zu, wird nur der erste
+	 * Datensatz zurückgegeben.
+	 * @param sQuery: String - SQL Anweisung
+	 * @return String[] : einzelner (erster) Datensatz
+	 * @throws Exception: Umwandlung ArrayList in Array nicht möglich
+	 */
+	public String[] getSingleDataSet(String sQuery)throws Exception{
+		ArrayList<String> sTableInf = getSingleDataSetList(sQuery);
+		try {
+			return sTableInf.toArray(new String[sTableInf.size()]);
+		} catch (Exception ex) {
+			throw new Exception("Fehler bei der Umwandlung (List ->Array)");
+		}
+	}
+	
+	/**
+	 * Gibt einen einzelnen Datensatz zurück;
+	 * Treffen mehrerer Datensätze auf die Abfrage zu, wird nur der erste
+	 * Datensatz zurückgegeben.
+	 * @param sQuery: String - SQL Anweisung
+	 * @return ArrayList<String> : einzelner (erster) Datensatz
+	 * @throws Exception: Umwandlung ArrayList in Array nicht möglich
+	 */
+	public ArrayList<String> getSingleDataSetList(String sQuery) throws Exception {
+		int iColCount = 0;
+		ArrayList<String> sArrContent = new ArrayList<String>();
+		Statement stm = con.createStatement();
+		ResultSet rs;
+
+		try {
+			rs = stm.executeQuery(sQuery);
+		} catch (SQLException ex) {
+			throw new Exception("Fehler bei der SQL-Abfrage. \n" + sQuery);
+		}
+
+		if (rs != null) {
+			rs.beforeFirst();
+			rs.next();
+			iColCount = rs.getMetaData().getColumnCount();
+
+			int m = 0;
+
+			for (m = 0; m <= iColCount - 1; m++) {
+				String s = "";
+				if (rs.getString(m + 1) == null)
+					s = "";
+				else
+					s = rs.getString(m + 1);
+
+				sArrContent.add(s);
 			}
 		} else {
 			sArrContent = null;
