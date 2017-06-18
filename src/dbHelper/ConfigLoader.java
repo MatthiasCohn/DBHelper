@@ -70,10 +70,11 @@ public class ConfigLoader {
 	 * @throws Exception
 	 */
 	public void setsFilePath(String sPath) throws Exception {
-
+		
 		if (sFilePath == null || sPath == "") {
 			// https://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html
 			JFileChooser fcFile = new JFileChooser();
+			//fcFile.getCurrentDirectory();
 			FileFilter ff = new FileNameExtensionFilter("Configurations-Datei", "cfg");
 			fcFile.setFileFilter(ff);
 			int returnVal = fcFile.showOpenDialog(null);

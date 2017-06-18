@@ -106,15 +106,18 @@ public class DBCon {
 	 * 
 	 * @return Boolean: Status der DB-Verbindung
 	 */
+	@SuppressWarnings("finally")
 	public boolean isConnected() {
 		boolean connected = false;
 		try {
 			connected = !con.isClosed();
 		} catch (SQLException e) {
+			
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			return connected;
 		}
-		return connected;
 	}
 
 	/**
