@@ -14,7 +14,7 @@ import java.util.*;
  * <b><br>
  * 
  * @author Cohn, Matthias (77210-565998)
- * @version 1.1.0, 2017-06-07
+ * @version 1.1.2, 2017-06-18
  */
 public class DBCon {
 	private Connection con;
@@ -93,7 +93,9 @@ public class DBCon {
 	 */
 	public void disconnect() throws SQLException {
 		try {
-			con.commit();
+			if (con.getAutoCommit() == false) {
+				con.commit();
+			}
 			con.clearWarnings();
 			con.close();
 		} catch (Exception ex) {
@@ -112,7 +114,7 @@ public class DBCon {
 		try {
 			connected = !con.isClosed();
 		} catch (SQLException e) {
-			
+
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
@@ -386,14 +388,16 @@ public class DBCon {
 	}
 
 	/**
-	 * Gibt einen einzelnen Datensatz zurück;
-	 * Treffen mehrerer Datensätze auf die Abfrage zu, wird nur der erste
-	 * Datensatz zurückgegeben.
-	 * @param sQuery: String - SQL Anweisung
+	 * Gibt einen einzelnen Datensatz zurück; Treffen mehrerer Datensätze auf
+	 * die Abfrage zu, wird nur der erste Datensatz zurückgegeben.
+	 * 
+	 * @param sQuery:
+	 *            String - SQL Anweisung
 	 * @return String[] : einzelner (erster) Datensatz
-	 * @throws Exception: Umwandlung ArrayList in Array nicht möglich
+	 * @throws Exception:
+	 *             Umwandlung ArrayList in Array nicht möglich
 	 */
-	public String[] getSingleDataSet(String sQuery)throws Exception{
+	public String[] getSingleDataSet(String sQuery) throws Exception {
 		ArrayList<String> sTableInf = getSingleDataSetList(sQuery);
 		try {
 			return sTableInf.toArray(new String[sTableInf.size()]);
@@ -401,14 +405,16 @@ public class DBCon {
 			throw new Exception("Fehler bei der Umwandlung (List ->Array)");
 		}
 	}
-	
+
 	/**
-	 * Gibt einen einzelnen Datensatz zurück;
-	 * Treffen mehrerer Datensätze auf die Abfrage zu, wird nur der erste
-	 * Datensatz zurückgegeben.
-	 * @param sQuery: String - SQL Anweisung
+	 * Gibt einen einzelnen Datensatz zurück; Treffen mehrerer Datensätze auf
+	 * die Abfrage zu, wird nur der erste Datensatz zurückgegeben.
+	 * 
+	 * @param sQuery:
+	 *            String - SQL Anweisung
 	 * @return ArrayList<String> : einzelner (erster) Datensatz
-	 * @throws Exception: Umwandlung ArrayList in Array nicht möglich
+	 * @throws Exception:
+	 *             Umwandlung ArrayList in Array nicht möglich
 	 */
 	public ArrayList<String> getSingleDataSetList(String sQuery) throws Exception {
 		int iColCount = 0;

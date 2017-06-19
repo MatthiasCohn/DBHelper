@@ -16,7 +16,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * @author Cohn, Matthias (77210-565998)
- * @version 1.1.0 - 2017-06-07
+ * @version 1.1.3 - 2017-06-19
  * Ermöglicht das öffnen einer strukturierten Datei, welche <br>
  * Informationen für eine DB-Verbindung enthält, sowie die sicherer <br>
  * Rückgabe der Informationen URL, Account und Passwort (in exakt dieser Reihenfolge)<br>
@@ -55,6 +55,7 @@ public class ConfigLoader {
 	 */
 	public String getsFilePath() throws Exception {
 		if (sFilePath == "" || sFilePath == null) {
+			sFilePath=null;
 			try {
 				setsFilePath("");
 			} catch (Exception e) {
@@ -71,9 +72,12 @@ public class ConfigLoader {
 	 */
 	public void setsFilePath(String sPath) throws Exception {
 		
-		if (sFilePath == null || sPath == "") {
+		if (sFilePath == null && sPath == "") {
 			// https://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html
 			JFileChooser fcFile = new JFileChooser();
+			fcFile.setCurrentDirectory(new File(System.getProperty("user.dir")));
+			fcFile.getCurrentDirectory();
+			System.out.println(fcFile.getCurrentDirectory().getAbsolutePath());
 			//fcFile.getCurrentDirectory();
 			FileFilter ff = new FileNameExtensionFilter("Configurations-Datei", "cfg");
 			fcFile.setFileFilter(ff);
@@ -91,6 +95,10 @@ public class ConfigLoader {
 				sFilePath = null;
 			}
 		}
+		if (sPath!=""){
+			sFilePath=sPath;
+		}
+		//System.out.println(sFilePath);
 		try { // ausgewählter Pfad wird getestet
 			FileReader frFile = null;
 			frFile = new FileReader(sFilePath); // String mit Pfad

@@ -14,6 +14,7 @@ public class Sample {
 
 	public static void main(String[] args) {
 		try {
+			
 			dbConf.clearConfig(false);
 			ArrLDBConf=dbConf.getsArrLConfigItems();
 			if (ArrLDBConf.size()==3){
