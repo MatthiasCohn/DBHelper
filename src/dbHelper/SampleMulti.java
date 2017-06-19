@@ -10,8 +10,9 @@ import dbHelper.ConfigLoader;
 import dbHelper.DBCon;
 
 /**
- * @author Ich
- *
+ * @author Matthias Cohn
+ * @version 1.0 (2017-06-19)
+ * Sample, how to initialize and Use Multiple DB-Connections
  */
 public class SampleMulti {
 
