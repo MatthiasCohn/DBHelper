@@ -37,14 +37,14 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * 
  */
 public class ConfigLoader {
-	private static ArrayList<String> sArrLConfigItems = new ArrayList<String>();
+	private static ArrayList<String> sArrLConfigItems;
 	private static String sFilePath;
 
 	/**
 	 * 
 	 */
 	public ConfigLoader() {
-
+		sArrLConfigItems = new ArrayList<String>();
 		sFilePath = null;
 	}
 
