@@ -14,7 +14,7 @@ import java.util.*;
  * <b><br>
  * 
  * @author Cohn, Matthias (77210-565998)
- * @version 1.1.2, 2017-06-18
+ * @version 1.1.3, 2017-06-19
  */
 public class DBCon {
 	private Connection con;
