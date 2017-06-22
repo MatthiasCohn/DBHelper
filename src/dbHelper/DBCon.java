@@ -10,11 +10,11 @@ import java.util.*;
 /**
  * Diese Klasse stellt eine Verbindung zur Datenbank her und <br>
  * ermöglicht die Verwaltung von Datensätzen.<br>
- * <b> Hinweis: Eine Datentypprüfung für Update und Insert sind NICHT vorhanden!
- * <b><br>
+ * Hinweis: Eine Datentypprüfung für Update und Insert sind NICHT vorhanden!
+ * 
  * 
  * @author Cohn, Matthias (77210-565998)
- * @version 1.1.3, 2017-06-19
+ * @version 1.1.4, 2017-06-22
  */
 public class DBCon {
 	private Connection con;
@@ -140,7 +140,7 @@ public class DBCon {
 	/**
 	 * Gibt die Namen aller, in der DB vorhandenen, Tabellen zurück
 	 * 
-	 * @return ArrayList <String> : Namen aller, in der DB vorhandenen, Tabellen
+	 * @return ArrayList String : Namen aller, in der DB vorhandenen, Tabellen
 	 * @throws Exception
 	 */
 	public ArrayList<String> getTablesList() throws Exception {
@@ -184,7 +184,7 @@ public class DBCon {
 	/**
 	 * Gibt die Namen aller, in der Tabelle vorhandenen, Tabellenspalten zurück
 	 * 
-	 * @return ArrayList<String> Namen aller, in der Tabelle vorhandenen,
+	 * @return ArrayList String Namen aller, in der Tabelle vorhandenen,
 	 *         Tabellenspalten
 	 * @param sTableName,
 	 *            String: Tabellenname
@@ -235,7 +235,7 @@ public class DBCon {
 	 *            , String : Tabellenname
 	 * @param sColName
 	 *            , String : Spaltenname
-	 * @return ArrayList<String> Inhalt aller, in der Tabellenspalte
+	 * @return ArrayList String Inhalt aller, in der Tabellenspalte
 	 *         vorhandenen, Zellen
 	 * @throws Exception
 	 */
@@ -394,8 +394,7 @@ public class DBCon {
 	 * @param sQuery:
 	 *            String - SQL Anweisung
 	 * @return String[] : einzelner (erster) Datensatz
-	 * @throws Exception:
-	 *             Umwandlung ArrayList in Array nicht möglich
+	 * @throws Exception : Umwandlung ArrayList in Array nicht möglich
 	 */
 	public String[] getSingleDataSet(String sQuery) throws Exception {
 		ArrayList<String> sTableInf = getSingleDataSetList(sQuery);
@@ -412,15 +411,14 @@ public class DBCon {
 	 * 
 	 * @param sQuery:
 	 *            String - SQL Anweisung
-	 * @return ArrayList<String> : einzelner (erster) Datensatz
-	 * @throws Exception:
-	 *             Umwandlung ArrayList in Array nicht möglich
+	 * @return ArrayList String : einzelner (erster) Datensatz
+	 * @throws Exception
 	 */
 	public ArrayList<String> getSingleDataSetList(String sQuery) throws Exception {
 		int iColCount = 0;
 		ArrayList<String> sArrContent = new ArrayList<String>();
 		Statement stm = con.createStatement();
-		ResultSet rs;
+		ResultSet rs = null;
 
 		try {
 			rs = stm.executeQuery(sQuery);
@@ -451,6 +449,50 @@ public class DBCon {
 	}
 
 	/**
+	 * Gibt alle Datensets aus, aber nur eine (die Erste Spalte)
+	 * @param sQuery : String - SQL konforme Abfrage
+	 * @return ArrayList  String  - Datensets
+	 * @throws Exception
+	 */
+	public ArrayList<String> getDataSetsSingleColList(String sQuery) throws Exception {
+		ArrayList<String> sArrContent = new ArrayList<String>();
+		Statement stm = con.createStatement();
+		ResultSet rs = null;
+
+		try {
+			rs = stm.executeQuery(sQuery);
+		} catch (SQLException ex) {
+			throw new Exception("Fehler bei der SQL-Abfrage. \n" + sQuery);
+		}
+
+		if (rs != null) {
+			rs.beforeFirst();
+			while (rs.next()) {
+				sArrContent.add(rs.getString(1));
+			}
+		} else {
+			sArrContent = null;
+		}
+		return sArrContent;
+	}
+	
+	/**
+	 * Gibt alle Datensets aus, aber nur eine (die Erste Spalte)
+	 * @param sQuery : String - SQL konforme Abfrage
+	 * @return String[] - Datensets
+	 * @throws Exception : null, wenn abfrage nicht erfolgreich
+	 */
+	public String[] getDataSetsSingleCol(String sQuery) throws Exception{
+		ArrayList<String> sTableInf = getDataSetsSingleColList(sQuery);
+				try{
+					return sTableInf.toArray(new String[sTableInf.size()]);
+				}catch (Exception e){
+					return null;
+				}				
+	}
+	
+
+	/**
 	 * Anfügen eines neuen Datensatzes in einer Tabelle
 	 * 
 	 * @param Table,
@@ -460,7 +502,7 @@ public class DBCon {
 	 * @param Content
 	 *            String[] - Inhalt zu Spalten
 	 * @return Integer: Anzahl der ausgeführten Reihen (Erfolgreiches Einfügen:=
-	 *         >0)
+	 *         größer 0)
 	 * @throws Exception
 	 */
 	public int insertDataSet(String Table, String[] ColNames, String[] Content) throws Exception {
@@ -475,7 +517,7 @@ public class DBCon {
 	 * @param sQuery
 	 *            , String: SQL-Konforme "Insert Into ..." - Abfrage
 	 * @return Integer: Anzahl der ausgeführten Reihen (Erfolgreiches Einfügen:=
-	 *         >0
+	 *         größer 0
 	 * @throws Exception
 	 */
 	public int insertDataSet(String sQuery) throws Exception {
@@ -499,7 +541,7 @@ public class DBCon {
 	 *            String[][]: String{{[Name der Spalte],[Kriterium]}, ...}
 	 *            WHERE-CLAUSE
 	 * @return Integer: Anzahl der ausgeführten Reihen (Erfolgreiches Einfügen:=
-	 *         >0
+	 *         größer 0
 	 * @throws Exception
 	 */
 	public int deleteDataSet(String sTable, String[][] sCriteria) throws Exception {
@@ -513,7 +555,7 @@ public class DBCon {
 	 * @param sQuery,
 	 *            String: SQL-Konforme "DELETE ..." - Abfrage
 	 * @return Integer: Anzahl der ausgeführten Reihen (Erfolgreiches Einfügen:=
-	 *         >0
+	 *         größer 0
 	 * @throws Exception
 	 */
 	public int deleteDataSet(String sQuery) throws Exception {
@@ -551,7 +593,7 @@ public class DBCon {
 	 *            String[][]: String{{[Name der Spalte],[Kriterium]}, ...}
 	 *            WHERE-CLAUSE
 	 * @return Integer: Anzahl der ausgeführten Reihen (Erfolgreiches Einfügen:=
-	 *         >0
+	 *         größer 0
 	 * @throws Exception
 	 */
 	public int updateDataSet(String Table, String[][] sColContent, String[][] sCriteria) throws Exception {
@@ -566,7 +608,7 @@ public class DBCon {
 	 * @param sQuery,
 	 *            String: SQL-Konforme "UPDATE ..." - Abfrage
 	 * @return Integer: Anzahl der ausgeführten Reihen (Erfolgreiches Einfügen:=
-	 *         >0
+	 *          größer als 0
 	 * @throws Exception
 	 */
 	public int updateDataSet(String sQuery) throws Exception {
