@@ -28,6 +28,31 @@ public class DBCon {
 	// public static Connection getCon() {
 	// return con;
 	// }
+	
+	/**
+	 * Eintichten einer DB-Verbindung anhand einer DB-Configuration
+	 * @param dbConf: Datenbankconfiguration
+	 */
+	public void setConnection(ConfigLoader dbConf) throws Exception {
+		ArrayList<String> arrlAL=new ArrayList<String>();
+		try {
+			arrlAL = dbConf.getsArrLConfigItems();
+			switch (arrlAL.size()) {
+			case 3:
+				setConnection(arrlAL.get(0), arrlAL.get(1), arrlAL.get(2));
+				break;
+			case 4:
+				setConnection(arrlAL.get(0), arrlAL.get(1), arrlAL.get(2), arrlAL.get(3));
+				break;
+			default:
+				throw new Exception("Datenbankkonfiguration unvollständig.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Konfiguration der Datenbankverbindung nicht möglich");
+			dbConf.clearConfig(false);
+		}
+	}
 
 	/**
 	 * Verbindungsparameter zur DB festlegen

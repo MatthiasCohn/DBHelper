@@ -71,13 +71,24 @@ public class ConfigLoader {
 	 * @throws Exception
 	 */
 	public void setsFilePath(String sPath) throws Exception {
+		setsFilePath(sPath, "Wählen Sie eine Datei");
+	}
+	
+	/**
+	 * 	 * Manuelles setzen des Pfades einer Configurationsdatei
+	 * @param sPath
+	 * @param sTitle: String - Anzuzeigender Titel
+	 * @throws Exception
+	 */
+	public void setsFilePath(String sPath, String sTitle) throws Exception {
 		
 		if (sFilePath == null && sPath == "") {
 			// https://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html
 			JFileChooser fcFile = new JFileChooser();
+			fcFile.setDialogTitle(sTitle);
 			fcFile.setCurrentDirectory(new File(System.getProperty("user.dir")));
 			fcFile.getCurrentDirectory();
-			System.out.println(fcFile.getCurrentDirectory().getAbsolutePath());
+			//System.out.println(fcFile.getCurrentDirectory().getAbsolutePath());
 			//fcFile.getCurrentDirectory();
 			FileFilter ff = new FileNameExtensionFilter("Configurations-Datei", "cfg");
 			fcFile.setFileFilter(ff);
@@ -126,7 +137,7 @@ public class ConfigLoader {
 
 	/**
 	 * Übergibt die für die Datenbankverbindung relevanten informationen zurück
-	 * @return ArrayList <String> : 0- URL, 1-User, 2-PSW
+	 * @return ArrayList(String) : 0- URL, 1-User, 2-PSW
 	 * @throws Exception
 	 */
 	public ArrayList<String> getsArrLConfigItems() throws Exception {
