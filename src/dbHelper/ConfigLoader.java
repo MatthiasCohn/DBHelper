@@ -174,7 +174,7 @@ public class ConfigLoader {
 	private static void fReadIn() throws Exception {
 		// Quelle:
 		// http://www.computer-masters.de/java-datei-zeilenweise-einlesen-bufferedreader.php
-		ArrayList<String> ArrLBuffer = new ArrayList<String>();
+		ArrayList<String> arrLBuffer = new ArrayList<String>();
 		FileReader frFile = null;
 		try {
 			frFile = new FileReader(sFilePath); // String mit Pfad
@@ -182,7 +182,7 @@ public class ConfigLoader {
 			String sLine = "";
 			try {
 				while (null != (sLine = brPuffer.readLine())) {
-					ArrLBuffer.add(sLine);
+					arrLBuffer.add(sLine);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -201,23 +201,23 @@ public class ConfigLoader {
 			e.printStackTrace();
 			throw new Exception("Kann Datei, bei angegebenem Pfad, nicht selektieren.");
 		}
-		if (ArrLBuffer != null)
-			prepArrL(ArrLBuffer);
+		if (arrLBuffer != null)
+			prepArrL(arrLBuffer);
 	}
 	/**
 	 * Durchsucht eine ArrayList auf Verbinungskeywords und überträgt diese in die Objekt ArrayList sArrLConfigItems<br>
 	 * Reihenfolge: URL, ACCount, PSW und Datenbankname
 	 * @param ArrLBuffer
 	 */
-	private static void prepArrL(ArrayList<String> ArrLBuffer) {
-		ArrayList<String> ArrLVal = new ArrayList<String>();
+	private static void prepArrL(ArrayList<String> arrLBuffer) {
+		ArrayList<String> arrLVal = new ArrayList<String>();
 
-		ArrLVal.add(sFindValue(ArrLBuffer, "URL:"));
-		ArrLVal.add(sFindValue(ArrLBuffer, "ACC:"));
-		ArrLVal.add(sFindValue(ArrLBuffer, "PSW:"));
-		ArrLVal.add(sFindValue(ArrLBuffer, "DBN:"));
-		if(ArrLVal.get(3)=="") ArrLVal.remove(3);
-		sArrLConfigItems = ArrLVal;
+		arrLVal.add(sFindValue(arrLBuffer, "URL:"));
+		arrLVal.add(sFindValue(arrLBuffer, "ACC:"));
+		arrLVal.add(sFindValue(arrLBuffer, "PSW:"));
+		arrLVal.add(sFindValue(arrLBuffer, "DBN:"));
+		if(arrLVal.get(3)=="") arrLVal.remove(3);
+		sArrLConfigItems = arrLVal;
 	}
 	
 	/**
@@ -242,5 +242,14 @@ public class ConfigLoader {
 		}
 		return sVal;
 	}
-
+	
+	/**
+	 * Prüft ob eine gültige Konfiguration geladen wurde
+	 * @return
+	 */
+	public boolean bConfigIsLoaded(){
+		if (sArrLConfigItems.size() >= 3 && sFilePath!=""){
+			return true;
+		}else{ return false;	}
+	}
 }
