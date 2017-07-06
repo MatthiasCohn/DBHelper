@@ -2,6 +2,8 @@
  * @author Matthias Cohn
  * @version 1.1.5 (2017-06-26)
  *
+ * * Erfordert: mysql-connector-java*.jar
+ *
  * Liest Datenbankverbindungskonfigurationen aus .cfg-Files (Configloader)
  * 
  * Strukurbeispiel:

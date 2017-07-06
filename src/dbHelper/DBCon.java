@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.*;
 
 /**
- * Diese Klasse stellt eine Verbindung zur Datenbank her und <br>
+ * Diese Klasse stellt eine Verbindung zur MySQL-Datenbank her und <br>
  * ermöglicht die Verwaltung von Datensätzen.<br>
  * Hinweis: Eine Datentypprüfung für Update und Insert sind NICHT vorhanden!
  * 
@@ -25,9 +25,6 @@ public class DBCon {
 		mds = new MysqlDataSource();
 	}
 
-	// public static Connection getCon() {
-	// return con;
-	// }
 	
 	/**
 	 * Eintichten einer DB-Verbindung anhand einer DB-Configuration
